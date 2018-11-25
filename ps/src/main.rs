@@ -5,6 +5,21 @@ fn main() {
     operators();
     loops();
     for_loop();
+    match_statement();
+    functions();
+    closures();
+    traits();
+}
+
+fn match_statement() {
+    let country_code = 77;
+    let country = match country_code {
+        44 => "UK",
+        46 => "Swden",
+        1...999 => "unknown",
+        _ => "invalid",
+    };
+    println!("country_code = {} & country = {}", country_code, country);
 }
 
 fn for_loop() {
@@ -73,4 +88,102 @@ fn operators() {
     println!("pi_less4 = {}", pi_less4);
 
     println!("------------------------------");
+}
+
+fn print_value(x: i32) {
+    println!("value = {}", x);
+}
+
+fn functions() {
+    print_value(33);
+    let mut z = 1;
+    println!("z = {}", z);
+    increase(&mut z);
+    println!("z = {}", z);
+
+    let a = 3;
+    let b = 4;
+    let prod = product(a, b);
+    println!("prod = {}", prod);
+}
+
+fn product(x: i32, y: i32) -> i32 {
+    x * y
+}
+
+fn increase(x: &mut i32) {
+    *x += 1;
+}
+
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+struct Line {
+    start: Point,
+    end: Point,
+}
+
+impl Line {
+    fn len(&self) -> f64 {
+        let dx = self.start.x - self.end.x;
+        let dy = self.start.y - self.end.y;
+        (dx * dx - dy * dy).sqrt()
+    }
+}
+
+fn say_hello() {
+    println!("Hello!!");
+}
+
+fn closures() {
+    let sh = say_hello;
+    sh();
+
+    let plus_one = |x: i32| -> i32 { x + 1 };
+
+    let a = 6;
+    println!("{} + 1 = {}", a, plus_one(a));
+
+    let plus_two = |x| {
+        let mut z = x;
+        z += 2;
+        z
+    };
+
+    println!("{} + 2 = {}", 3, plus_two(3));
+}
+
+trait Animal {
+    fn create(name: &'static str) -> Self;
+
+    fn name(&self) -> &'static str;
+
+    fn talk(&self) {
+        println!("{} cannot talk", self.name());
+    }
+}
+
+struct Human {
+    name: &'static str,
+}
+
+impl Animal for Human {
+    fn create(name: &'static str) -> Human {
+        Human { name: name }
+    }
+
+    fn name(&self) -> &'static str {
+        self.name
+    }
+
+    fn talk(&self) {
+        println!("{} says Hello!", self.name);
+    }
+}
+
+fn traits() {
+    let h = Human { name: "John" };
+    h.talk();
 }
