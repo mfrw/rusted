@@ -12,11 +12,28 @@ use urlencoded::UrlEncodedBody;
 
 fn main() {
     let mut router = Router::new();
-    router.get("/", get_form, "root");
+    router.get("/", get_test, "root");
     router.post("/gcd", post_gcd, "gcd");
 
-    println!("Serving on http://localhost:3000...");
-    Iron::new(router).http("localhost:3000").unwrap();
+    println!("Serving on http://0.0.0.0:3000...");
+    Iron::new(router).http("0.0.0.0:3000").unwrap();
+}
+fn get_test(_request: &mut Request) -> IronResult<Response> {
+    let mut response = Response::new();
+
+    response.set_mut(status::Ok);
+    response.set_mut(mime!(Text/Html; Charset=Utf8));
+    response.set_mut(
+r#"
+<html>
+<head>
+<title>Test</title>
+</head>
+<body>Test Body</body>
+</html>
+"#,
+    );
+    Ok(response)
 }
 
 fn get_form(_request: &mut Request) -> IronResult<Response> {
