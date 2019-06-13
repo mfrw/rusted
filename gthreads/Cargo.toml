@@ -1,0 +1,7 @@
+[package]
+name = "gthreads"
+version = "0.1.0"
+authors = ["Muhammad Falak R Wani <falakreyaz@gmail.com>"]
+edition = "2018"
+
+[dependencies]
