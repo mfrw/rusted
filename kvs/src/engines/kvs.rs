@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 use serde_json::Deserializer;
 
+use super::KvsEngine;
 use crate::{KvsError, Result};
 use std::ffi::OsStr;
 
@@ -142,6 +143,61 @@ impl KvStore {
 
     fn new_log_file(&mut self, gen: u64) -> Result<BufWriterWithPos<File>> {
         new_log_file(&self.path, gen, &mut self.readers)
+    }
+}
+
+impl KvsEngine for KvStore {
+    fn set(&mut self, key: String, value: String) -> Result<()> {
+        let cmd = Command::set(key, value);
+        let pos = self.writer.pos;
+
+        serde_json::to_writer(&mut self.writer, &cmd)?;
+        self.writer.flush()?;
+        if let Command::Set { key, .. } = cmd {
+            if let Some(old_cmd) = self
+                .index
+                .insert(key, (self.current_gen, pos..self.writer.pos).into())
+            {
+                self.uncompacted += old_cmd.len;
+            }
+        }
+        if self.uncompacted > COMPACTION_THRESHOLD {
+            self.compact()?;
+        }
+        Ok(())
+    }
+
+    fn get(&mut self, key: String) -> Result<Option<String>> {
+        if let Some(cmd_pos) = self.index.get(&key) {
+            let reader = self
+                .readers
+                .get_mut(&cmd_pos.gen)
+                .expect("Cannot find log reader");
+            reader.seek(SeekFrom::Start(cmd_pos.pos))?;
+            let cmd_reader = reader.take(cmd_pos.len);
+            if let Command::Set { value, .. } = serde_json::from_reader(cmd_reader)? {
+                Ok(Some(value))
+            } else {
+                Err(KvsError::UnexpectedCommandType)
+            }
+        } else {
+            Ok(None)
+        }
+    }
+
+    fn remove(&mut self, key: String) -> Result<()> {
+        if self.index.contains_key(&key) {
+            let cmd = Command::remove(key);
+            serde_json::to_writer(&mut self.writer, &cmd)?;
+            self.writer.flush()?;
+            if let Command::Remove { key } = cmd {
+                let old_cmd = self.index.remove(&key).expect("Key not found");
+                self.uncompacted += old_cmd.len;
+            }
+            Ok(())
+        } else {
+            Err(KvsError::KeyNotFound)
+        }
     }
 }
 
