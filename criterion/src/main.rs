@@ -1,3 +1,5 @@
+mod sieve;
+
 fn main() {
-    println!("Hello, world!");
+    sieve::primes();
 }
