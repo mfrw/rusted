@@ -12,6 +12,7 @@ num = "~0.1.36"
 permutohedron = "~0.2.2"
 primal = "~0.2.3"
 csv = "1.1.1"
+serde = { version = "1", features = ["derive"] }
 
 #[[bin]]
 #name = "criterion"

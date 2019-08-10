@@ -2,6 +2,23 @@ use std::error::Error;
 use std::io;
 use std::process;
 
+use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+struct Record {
+    #[serde(rename = "Latitude")]
+    latitude: f64,
+    #[serde(rename = "Longitude")]
+    longitude: f64,
+    #[serde(rename = "Population")]
+    population: Option<u64>,
+    #[serde(rename = "City")]
+    city: String,
+    #[serde(rename = "State")]
+    state: String,
+}
+
 pub fn csv_writer() {
     //let dollar_films = vec![
     //("A Fistful of Dollars", "Rojo", 1964),
@@ -28,8 +45,9 @@ fn run() -> Result<(), Box<dyn Error>> {
         let headers = rdr.headers()?;
         println!("{:?}", headers);
     }
-    for result in rdr.records() {
-        let record = result?;
+
+    for result in rdr.deserialize() {
+        let record: Record = result?;
         println!("{:?}", record);
     }
     Ok(())
