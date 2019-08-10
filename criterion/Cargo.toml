@@ -13,6 +13,7 @@ permutohedron = "~0.2.2"
 primal = "~0.2.3"
 csv = "1.1.1"
 serde = { version = "1", features = ["derive"] }
+hyper = "0.12.33"
 
 #[[bin]]
 #name = "criterion"
