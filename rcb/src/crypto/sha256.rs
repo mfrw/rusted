@@ -20,6 +20,6 @@ pub fn run() -> Result<(), std::io::Error> {
     let input = File::open(path)?;
     let reader = BufReader::new(input);
     let digest = sha256_digest(reader)?;
-    println!("SHA-256 digest is {}", HEXUPPER.encode(digest.as_ref()));
+    println!("SHA-256: {}", HEXUPPER.encode(digest.as_ref()));
     Ok(())
 }
