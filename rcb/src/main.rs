@@ -1,3 +1,4 @@
+mod crypto;
 mod par;
 mod rand;
 mod sort;
@@ -10,4 +11,5 @@ fn main() {
     term::run();
     tar::run();
     par::run();
+    crypto::run();
 }
