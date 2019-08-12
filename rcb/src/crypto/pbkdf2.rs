@@ -6,7 +6,7 @@ use std::num::NonZeroU32;
 
 pub fn run() -> Result<(), Unspecified> {
     const CREDENTIAL_LEN: usize = digest::SHA512_OUTPUT_LEN;
-    let N_ITER: NonZeroU32 = NonZeroU32::new(10_000).unwrap();
+    let n_iter: NonZeroU32 = NonZeroU32::new(10_000).unwrap();
     let rng = rand::SystemRandom::new();
 
     let mut salt = [0u8; CREDENTIAL_LEN];
@@ -16,7 +16,7 @@ pub fn run() -> Result<(), Unspecified> {
     let mut pbkd2_hash = [0u8; CREDENTIAL_LEN];
     pbkdf2::derive(
         pbkdf2::PBKDF2_HMAC_SHA512,
-        N_ITER,
+        n_iter,
         &salt,
         password.as_bytes(),
         &mut pbkd2_hash,
@@ -26,7 +26,7 @@ pub fn run() -> Result<(), Unspecified> {
 
     let should_succede = pbkdf2::verify(
         pbkdf2::PBKDF2_HMAC_SHA512,
-        N_ITER,
+        n_iter,
         &salt,
         password.as_bytes(),
         &pbkd2_hash,
@@ -35,7 +35,7 @@ pub fn run() -> Result<(), Unspecified> {
     let wrong_password = "Wrong";
     let should_fail = pbkdf2::verify(
         pbkdf2::PBKDF2_HMAC_SHA512,
-        N_ITER,
+        n_iter,
         &salt,
         wrong_password.as_bytes(),
         &pbkd2_hash,
