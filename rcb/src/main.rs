@@ -1,5 +1,6 @@
 mod bit;
 mod crypto;
+mod datetime;
 mod par;
 mod rand;
 mod sort;
@@ -14,4 +15,5 @@ fn main() {
     par::run();
     crypto::run();
     bit::run();
+    datetime::run();
 }
