@@ -6,6 +6,7 @@ mod rand;
 mod sort;
 mod tar;
 mod term;
+mod tokio;
 
 fn main() {
     rand::run();
@@ -16,4 +17,5 @@ fn main() {
     crypto::run();
     bit::run();
     datetime::run();
+    tokio::run();
 }
