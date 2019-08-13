@@ -7,7 +7,10 @@ pub fn hello_world() {
     let client = TcpStream::connect(&addr)
         .and_then(|stream| {
             println!("created stream");
-            Ok(())
+            io::write_all(stream, "hello world\n").then(|result| {
+                println!("wrote to stream; success={:?}", result.is_ok());
+                Ok(())
+            })
         })
         .map_err(|err| {
             println!("connection error = {:?}", err);
