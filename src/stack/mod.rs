@@ -3,6 +3,7 @@
 mod from;
 mod iter;
 
+#[derive(Debug, Clone)]
 pub struct Stack<T> {
     base: Vec<T>,
 }
