@@ -3,8 +3,6 @@
 mod from;
 mod iter;
 
-pub use iter::IntoIter;
-
 pub struct Stack<T> {
     base: Vec<T>,
 }
@@ -50,5 +48,10 @@ mod tests {
             stk.push(i);
         }
         assert_eq!(stk.len(), 8);
+    }
+    #[test]
+    fn iter_test() {
+        let stk: Stack<_> = vec![1, 2, 3, 4, 5].into();
+        assert_eq!(stk.iter().count(), 5);
     }
 }

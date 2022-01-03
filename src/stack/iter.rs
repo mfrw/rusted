@@ -30,6 +30,26 @@ impl<T> IntoIterator for Stack<T> {
     }
 }
 
+impl<T> Stack<T> {
+    pub fn iter(&self) -> Iter<T> {
+        Iter {
+            it: self.base.iter(),
+        }
+    }
+}
+
+pub struct Iter<'a, T: 'a> {
+    it: std::slice::Iter<'a, T>,
+}
+
+impl<'a, T: 'a> Iterator for Iter<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.it.next_back()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
