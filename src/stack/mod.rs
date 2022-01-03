@@ -1,5 +1,9 @@
 #![allow(dead_code)]
 
+mod iter;
+
+pub use iter::IntoIter;
+
 pub struct Stack<T> {
     base: Vec<T>,
 }
