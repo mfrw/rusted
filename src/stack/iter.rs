@@ -1,19 +1,21 @@
 use super::Stack;
 
-pub struct IntoIter<T> {
-    it: std::vec::IntoIter<T>,
+/*
+pub struct IntoIter<I> {
+    it: I,
 }
 
-impl<T> IntoIter<T> {
-    pub fn new(stk: Stack<T>) -> Self {
-        Self {
-            it: stk.base.into_iter(),
-        }
+impl<I: DoubleEndedIterator> IntoIter<I> {
+    pub fn new(it: I) -> Self {
+        Self { it }
     }
 }
 
-impl<T> Iterator for IntoIter<T> {
-    type Item = T;
+impl<I> Iterator for IntoIter<I>
+where
+    I: DoubleEndedIterator,
+{
+    type Item = I::Item;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.it.next_back()
@@ -23,21 +25,29 @@ impl<T> Iterator for IntoIter<T> {
 impl<T> IntoIterator for Stack<T> {
     type Item = T;
 
-    type IntoIter = IntoIter<T>;
+    type IntoIter = IntoIter<std::vec::IntoIter<T>>;
 
     fn into_iter(self) -> Self::IntoIter {
-        IntoIter::new(self)
+        IntoIter::new(self.base.into_iter())
+    }
+}
+*/
+
+impl<T> Iterator for Stack<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.base.pop()
     }
 }
 
 impl<T> Stack<T> {
-    pub fn iter(&self) -> Iter<T> {
-        Iter {
-            it: self.base.iter(),
-        }
+    pub fn iter(&self) -> core::slice::Iter<T> {
+        self.base.iter()
     }
 }
 
+/*
 pub struct Iter<'a, T: 'a> {
     it: std::slice::Iter<'a, T>,
 }
@@ -49,6 +59,7 @@ impl<'a, T: 'a> Iterator for Iter<'a, T> {
         self.it.next_back()
     }
 }
+*/
 
 #[cfg(test)]
 mod tests {
