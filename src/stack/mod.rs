@@ -8,6 +8,20 @@ pub struct Stack<T> {
     base: Vec<T>,
 }
 
+impl<T> std::ops::Deref for Stack<T> {
+    type Target = Vec<T>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.base
+    }
+}
+
+impl<T> std::ops::DerefMut for Stack<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.base
+    }
+}
+
 /// Stack Public Interface
 impl<T> Stack<T> {
     pub fn new() -> Self {
